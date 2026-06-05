@@ -131,12 +131,14 @@ a:hover {
 .app-title {
   font-size: 1.5rem;
   font-weight: 700;
-  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  background: linear-gradient(135deg, #84cc16 0%, #06d6a0 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   margin: 0;
   letter-spacing: -0.5px;
+  text-shadow: 0 0 20px rgba(132, 204, 22, 0.3);
+  filter: drop-shadow(0 0 2px rgba(132, 204, 22, 0.5));
 }
 
 .btn-new-chat {
