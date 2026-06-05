@@ -413,11 +413,16 @@ function addMessageToUI(role, content) {
 }
 
 const TYPING_MESSAGES = [
-  "Réfléchit intensément…",
-  "Cherche et vérifie…",
-  "En train de formuler une réponse…",
-  "Analyse en cours…",
-  "Consultation des sources…"
+  "💭 Réfléchit intensément…",
+  "🔍 Cherche et vérifie…",
+  "✨ En train de formuler une réponse…",
+  "📊 Analyse en cours…",
+  "📚 Consultation des sources…",
+  "🧠 Traitement des données…",
+  "⚡ Génération de la réponse…",
+  "🎯 Synthèse en cours…",
+  "💡 Réflexion profonde…",
+  "🚀 Préparation de la réponse…"
 ];
 
 function showTypingIndicator(label) {
