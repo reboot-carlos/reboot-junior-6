@@ -16,48 +16,55 @@ let state = {
   }
 };
 
-// Éléments du DOM
-const elements = {
-  // Sidebar
-  sidebar: document.querySelector(".sidebar"),
-  btnNewChat: document.getElementById("btn-new-chat"),
-  historiqueList: document.getElementById("historique-list"),
-  roleButtons: document.querySelectorAll(".role-btn-compact"),
-  personalityButtons: document.querySelectorAll(".personality-btn-compact"),
-  btnConfig: document.getElementById("btn-config"),
-
-  // Chat
-  chatMessages: document.getElementById("chat-messages"),
-  chatForm: document.getElementById("chat-form"),
-  chatInput: document.getElementById("chat-input"),
-  btnSend: document.querySelector(".btn-send"),
-  chatHeader: document.querySelector(".chat-header"),
-  currentRoleDisplay: document.getElementById("current-role-display"),
-  currentRoleDesc: document.getElementById("current-role-desc"),
-  btnMenuToggle: document.getElementById("btn-menu-toggle"),
-
-  // Modal
-  modalConfig: document.getElementById("modal-config"),
-  btnCloseModal: document.getElementById("btn-close-modal"),
-  inputClaude: document.getElementById("input-claude"),
-  inputGemini: document.getElementById("input-gemini"),
-  inputApiKey: document.getElementById("input-apikey"),
-  btnSaveKeys: document.getElementById("btn-save-keys"),
-  btnClearKeys: document.getElementById("btn-clear-keys"),
-  configMessage: document.getElementById("config-message"),
-
-  // Indicateur de frappe
-  typingIndicator: document.getElementById("typing-indicator"),
-
-  // Suggestion chips
-  suggestionChips: document.getElementById("suggestion-chips")
-};
+// Éléments du DOM (queried after DOM is ready)
+let elements = {};
 
 /* ═══════════════════════════════════════════════════════════════════════════
    INITIALISATION
    ═══════════════════════════════════════════════════════════════════════════ */
 
+function queryDOMElements() {
+  elements = {
+    // Sidebar
+    sidebar: document.querySelector(".sidebar"),
+    btnNewChat: document.getElementById("btn-new-chat"),
+    historiqueList: document.getElementById("historique-list"),
+    roleButtons: document.querySelectorAll(".role-btn-compact"),
+    personalityButtons: document.querySelectorAll(".personality-btn-compact"),
+    btnConfig: document.getElementById("btn-config"),
+
+    // Chat
+    chatMessages: document.getElementById("chat-messages"),
+    chatForm: document.getElementById("chat-form"),
+    chatInput: document.getElementById("chat-input"),
+    btnSend: document.querySelector(".btn-send"),
+    chatHeader: document.querySelector(".chat-header"),
+    currentRoleDisplay: document.getElementById("current-role-display"),
+    currentRoleDesc: document.getElementById("current-role-desc"),
+    btnMenuToggle: document.getElementById("btn-menu-toggle"),
+
+    // Modal
+    modalConfig: document.getElementById("modal-config"),
+    btnCloseModal: document.getElementById("btn-close-modal"),
+    inputClaude: document.getElementById("input-claude"),
+    inputGemini: document.getElementById("input-gemini"),
+    inputApiKey: document.getElementById("input-apikey"),
+    btnSaveKeys: document.getElementById("btn-save-keys"),
+    btnClearKeys: document.getElementById("btn-clear-keys"),
+    configMessage: document.getElementById("config-message"),
+
+    // Indicateur de frappe
+    typingIndicator: document.getElementById("typing-indicator"),
+
+    // Suggestion chips
+    suggestionChips: document.getElementById("suggestion-chips")
+  };
+}
+
 function initialize() {
+  // Query DOM elements after DOM is ready
+  queryDOMElements();
+
   // Initialiser la première conversation
   if (!state.currentConversationId) {
     const conv = initializeFirstConversation(state.currentRole);
