@@ -15,9 +15,16 @@ const STORAGE_KEYS = {
 /* ─── API KEYS ─── */
 
 function saveApiKeys(claudeKey, geminiKey, searchKey) {
-  if (claudeKey) localStorage.setItem(STORAGE_KEYS.CLAUDE_KEY, claudeKey);
-  if (geminiKey) localStorage.setItem(STORAGE_KEYS.GEMINI_KEY, geminiKey);
-  if (searchKey) localStorage.setItem(STORAGE_KEYS.SEARCH_KEY, searchKey);
+  // Validation basique des clés avant stockage
+  if (claudeKey && claudeKey.startsWith("sk-ant-")) {
+    localStorage.setItem(STORAGE_KEYS.CLAUDE_KEY, claudeKey);
+  }
+  if (geminiKey && geminiKey.startsWith("AIza")) {
+    localStorage.setItem(STORAGE_KEYS.GEMINI_KEY, geminiKey);
+  }
+  if (searchKey && searchKey.startsWith("AIza")) {
+    localStorage.setItem(STORAGE_KEYS.SEARCH_KEY, searchKey);
+  }
 }
 
 function getApiKeys() {
@@ -91,7 +98,19 @@ function saveConversations(conversations) {
   try {
     localStorage.setItem(STORAGE_KEYS.CONVERSATIONS, JSON.stringify(conversations));
   } catch (e) {
-    console.warn("Impossible de sauvegarder les conversations", e);
+    if (e.name === 'QuotaExceededError') {
+      // localStorage plein - supprimer les 10 conversations les plus vieilles
+      console.warn("localStorage plein, nettoyage des anciennes conversations");
+      const sorted = conversations.sort((a, b) => a.createdAt - b.createdAt);
+      const cleaned = sorted.slice(10); // Garder les 10 les plus récentes
+      try {
+        localStorage.setItem(STORAGE_KEYS.CONVERSATIONS, JSON.stringify(cleaned));
+      } catch (e2) {
+        console.error("Impossible de sauvegarder même après nettoyage", e2);
+      }
+    } else {
+      console.warn("Impossible de sauvegarder les conversations", e);
+    }
   }
 }
 

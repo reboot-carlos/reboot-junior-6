@@ -4,93 +4,114 @@
 
 /* ─── CLAUDE AI (ANTHROPIC) ─── */
 
-async function callClaudeAPI(message, systemPrompt, conversationHistory = []) {
+async function callClaudeAPI(message, systemPrompt, conversationHistory = [], retries = 3) {
   const { claudeKey } = getApiKeys();
 
   if (!claudeKey) {
     throw new Error("Clé Claude non configurée");
   }
 
-  try {
-    // Construire l'historique au format API Claude
-    const messages = [
-      ...conversationHistory.map(msg => ({
-        role: msg.role,
-        content: msg.content
-      })),
-      { role: "user", content: message }
-    ];
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      // Construire l'historique au format API Claude
+      const messages = [
+        ...conversationHistory.map(msg => ({
+          role: msg.role,
+          content: msg.content
+        })),
+        { role: "user", content: message }
+      ];
 
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": claudeKey,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-        "anthropic-dangerous-direct-browser-access": "true"
-      },
-      body: JSON.stringify({
-        model: "claude-opus-4-8",
-        max_tokens: 1500,
-        system: systemPrompt,
-        messages: messages
-      })
-    });
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: {
+          "x-api-key": claudeKey,
+          "anthropic-version": "2023-06-01",
+          "content-type": "application/json",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
+        body: JSON.stringify({
+          model: "claude-opus-4-8",
+          max_tokens: 1500,
+          system: systemPrompt,
+          messages: messages
+        })
+      });
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "Erreur API Claude");
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || "Erreur API Claude");
+      }
+
+      const data = await response.json();
+      if (!data.content || !data.content[0] || !data.content[0].text) {
+        throw new Error("Réponse API invalide ou vide");
+      }
+      return data.content[0].text;
+    } catch (error) {
+      if (attempt === retries) {
+        console.error("Erreur Claude API après", retries, "tentatives:", error);
+        throw error;
+      }
+      // Attendre avant de retry (backoff exponentiel)
+      const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
-
-    const data = await response.json();
-    return data.content[0].text;
-  } catch (error) {
-    console.error("Erreur Claude API:", error);
-    throw error;
   }
 }
 
 /* ─── GEMINI AI (GOOGLE) ─── */
 
-async function callGeminiAPI(message, systemPrompt) {
+async function callGeminiAPI(message, systemPrompt, retries = 3) {
   const { geminiKey } = getApiKeys();
 
   if (!geminiKey) {
     throw new Error("Clé Gemini non configurée");
   }
 
-  try {
-    const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiKey}`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          contents: [
-            {
-              parts: [
-                {
-                  text: `${systemPrompt}\n\nQuestion: ${message}`
-                }
-              ]
-            }
-          ]
-        })
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const response = await fetch(
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${geminiKey}`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            contents: [
+              {
+                parts: [
+                  {
+                    text: `${systemPrompt}\n\nQuestion: ${message}`
+                  }
+                ]
+              }
+            ]
+          })
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error?.message || "Erreur API Gemini");
       }
-    );
 
-    if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.error?.message || "Erreur API Gemini");
+      const data = await response.json();
+      const result = data.candidates[0]?.content?.parts[0]?.text;
+      if (!result) {
+        throw new Error("Réponse Gemini vide ou invalide");
+      }
+      return result;
+    } catch (error) {
+      if (attempt === retries) {
+        console.error("Erreur Gemini API après", retries, "tentatives:", error);
+        throw error;
+      }
+      // Attendre avant de retry (backoff exponentiel)
+      const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000);
+      await new Promise(resolve => setTimeout(resolve, delay));
     }
-
-    const data = await response.json();
-    return data.candidates[0]?.content?.parts[0]?.text || "Pas de réponse";
-  } catch (error) {
-    console.error("Erreur Gemini API:", error);
-    throw error;
   }
 }
 
@@ -191,6 +212,11 @@ function safeMathEval(expression) {
     return null;
   }
 
+  // Limiter la longueur pour éviter les expressions trop longues
+  if (cleaned.length > 100) {
+    return null;
+  }
+
   try {
     // Utiliser Function au lieu de eval (plus sûr)
     const result = Function('"use strict"; return (' + cleaned + ")")();
@@ -256,7 +282,7 @@ function detectSpecialRequest(message) {
 
   // Météo
   if (
-    /météo|m[eé]t[eé]o|temps|temp[eé]rature/.test(lower) &&
+    /météo|meteo|temps qu'il fait|température/.test(lower) &&
     /[aà]|de|en|sur/.test(lower)
   ) {
     return "meteo";

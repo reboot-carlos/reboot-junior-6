@@ -104,9 +104,9 @@ function setupEventListeners() {
   elements.btnSaveKeys.addEventListener("click", handleSaveApiKeys);
   elements.btnClearKeys.addEventListener("click", handleClearApiKeys);
 
-  // Fermer modal en cliquant sur le fond
+  // Fermer modal en cliquant sur le fond (backdrop)
   elements.modalConfig.addEventListener("click", e => {
-    if (e.target === elements.modalConfig) closeModal();
+    if (e.target.classList.contains("modal")) closeModal();
   });
 
   // Accordéons
@@ -218,6 +218,12 @@ async function handleSendMessage(e) {
   const message = elements.chatInput.value.trim();
   if (!message || state.isLoading) return;
 
+  // Limiter à 10000 caractères pour éviter les débordements localStorage
+  if (message.length > 10000) {
+    alert("Le message dépasse 10000 caractères. Veuillez le raccourcir.");
+    return;
+  }
+
   // Hide suggestion chips on first message
   elements.suggestionChips?.classList.add("hidden");
 
@@ -238,7 +244,7 @@ async function handleSendMessage(e) {
 
     // Mettre à jour le titre de la conversation si c'est le premier message
     if (conversation.messages.length === 1) {
-      const title = message.substring(0, 50) + (message.length > 50 ? "..." : "");
+      const title = message.length > 50 ? message.substring(0, 50) + "..." : message;
       updateConversationTitle(state.currentConversationId, title);
       renderHistorique();
     }
@@ -282,7 +288,7 @@ async function generateResponse(userMessage) {
   const systemPrompt = combineRoleAndPersonality(state.currentRole, state.currentPersonality);
   const conversation = getConversationById(state.currentConversationId);
   const conversationHistory = (conversation?.messages || [])
-    .slice(-10)
+    .slice(-20)
     .map(msg => ({ role: msg.role === "user" ? "user" : "assistant", content: msg.content }));
 
   // 2. Embedded lesson match (instant, no API call)
@@ -315,7 +321,8 @@ async function generateResponse(userMessage) {
 }
 
 function _cacheAndReturn(key, result, skipCache) {
-  if (!skipCache) {
+  // skipCache=true pour météo (données temps-sensibles), false pour tout le reste
+  if (skipCache !== true) {
     if (_responseCache.size >= 60) _responseCache.delete(_responseCache.keys().next().value);
     _responseCache.set(key, result);
   }
@@ -673,7 +680,7 @@ function handleSaveApiKeys() {
 
   setTimeout(() => {
     closeModal();
-  }, 1500);
+  }, 2500);
 }
 
 function handleClearApiKeys() {
