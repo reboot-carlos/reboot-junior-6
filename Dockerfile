@@ -6,8 +6,8 @@ RUN rm /etc/nginx/conf.d/default.conf
 # Copy config as a template (PORT will be substituted at runtime)
 COPY nginx.conf /etc/nginx/templates/chatia.conf.template
 
-# Copy only static files to nginx web root
-COPY index.html styles.css /usr/share/nginx/html/
+# Copy static files and JavaScript to nginx web root
+COPY index.html styles.css roles.js lessons.js api.js storage.js chat.js /usr/share/nginx/html/
 
 EXPOSE 80
 
