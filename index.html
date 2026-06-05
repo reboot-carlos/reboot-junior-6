@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ChatBot Intelligent</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-container">
+    <!-- ════════════════════════════════════════════════════════════
+         SIDEBAR — Historique + Rôles
+         ════════════════════════════════════════════════════════════ -->
+    <aside class="sidebar">
+      <!-- Header Sidebar -->
+      <div class="sidebar-header">
+        <h1 class="app-title">ChatIA</h1>
+        <button class="btn-new-chat" id="btn-new-chat" title="Nouvelle conversation">
+          <span class="icon">+</span>
+        </button>
+      </div>
+
+      <!-- ACCORDÉON 1: Historique -->
+      <div class="accordion-section">
+        <button class="accordion-header" id="accordion-historique">
+          <span class="accordion-title">📋 Historique</span>
+          <span class="accordion-toggle">▼</span>
+        </button>
+        <div class="accordion-content" id="content-historique">
+          <div class="content-inner">
+            <div class="historique-list" id="historique-list">
+              <!-- Les conversations passées s'ajoutent ici -->
+            </div>
+            <button class="btn-clear-history" id="btn-clear-history" title="Supprimer l'historique">
+              <span class="icon">🗑️</span>
+              <span class="text">Supprimer l'historique</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDÉON 2: Rôles -->
+      <div class="accordion-section">
+        <button class="accordion-header" id="accordion-roles">
+          <span class="accordion-title">🎭 Rôles</span>
+          <span class="accordion-toggle">▼</span>
+        </button>
+        <div class="accordion-content open" id="content-roles">
+          <div class="content-inner">
+            <p class="accordion-subtitle">Choisir une perspective</p>
+            <div class="roles-grid">
+              <button class="role-btn-compact active" data-role="professeur" title="Professeur particulier">
+                <span class="icon-large">👨‍🏫</span>
+                <span class="label">Professeur</span>
+              </button>
+              <button class="role-btn-compact" data-role="assistant" title="Assistant général">
+                <span class="icon-large">🤖</span>
+                <span class="label">Assistant</span>
+              </button>
+              <button class="role-btn-compact" data-role="mentor" title="Mentor motivant">
+                <span class="icon-large">🎯</span>
+                <span class="label">Mentor</span>
+              </button>
+              <button class="role-btn-compact" data-role="chercheur" title="Chercheur expert">
+                <span class="icon-large">🔬</span>
+                <span class="label">Chercheur</span>
+              </button>
+              <button class="role-btn-compact" data-role="createur" title="Créatif/Écrivain">
+                <span class="icon-large">✍️</span>
+                <span class="label">Créateur</span>
+              </button>
+              <button class="role-btn-compact" data-role="developpeur" title="Développeur">
+                <span class="icon-large">💻</span>
+                <span class="label">Développeur</span>
+              </button>
+              <button class="role-btn-compact" data-role="analyste" title="Analyste">
+                <span class="icon-large">📊</span>
+                <span class="label">Analyste</span>
+              </button>
+              <button class="role-btn-compact" data-role="debatteur" title="Débatteur">
+                <span class="icon-large">🎤</span>
+                <span class="label">Débatteur</span>
+              </button>
+              <button class="role-btn-compact" data-role="conteur" title="Conteur">
+                <span class="icon-large">📖</span>
+                <span class="label">Conteur</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ACCORDÉON 3: Personnalités/Émotions -->
+      <div class="accordion-section">
+        <button class="accordion-header" id="accordion-personalities">
+          <span class="accordion-title">✨ Émotions</span>
+          <span class="accordion-toggle">▼</span>
+        </button>
+        <div class="accordion-content" id="content-personalities">
+          <div class="content-inner">
+            <p class="accordion-subtitle">Ajouter un ton (optionnel)</p>
+            <div class="personalities-grid">
+              <button class="personality-btn-compact" data-personality="optimiste" title="Optimiste">
+                <span class="icon-medium">☀️</span>
+                <span class="label">Optimiste</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="pragmatique" title="Pragmatique">
+                <span class="icon-medium">🛠️</span>
+                <span class="label">Pragmatique</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="creatif" title="Créatif">
+                <span class="icon-medium">🌈</span>
+                <span class="label">Créatif</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="sarcastique" title="Sarcastique">
+                <span class="icon-medium">😏</span>
+                <span class="label">Sarcastique</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="bienveillant" title="Bienveillant">
+                <span class="icon-medium">💚</span>
+                <span class="label">Bienveillant</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="passionne" title="Passionné">
+                <span class="icon-medium">🔥</span>
+                <span class="label">Passionné</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="analytique" title="Analytique">
+                <span class="icon-medium">🧠</span>
+                <span class="label">Analytique</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="audacieux" title="Audacieux">
+                <span class="icon-medium">🚀</span>
+                <span class="label">Audacieux</span>
+              </button>
+              <button class="personality-btn-compact" data-personality="none" title="Aucune personnalité">
+                <span class="icon-medium">✕</span>
+                <span class="label">Aucune</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuration -->
+      <div class="section-config">
+        <button class="btn-config" id="btn-config" title="Paramètres">⚙️</button>
+      </div>
+    </aside>
+
+    <!-- ════════════════════════════════════════════════════════════
+         MAIN CHAT ZONE
+         ════════════════════════════════════════════════════════════ -->
+    <main class="chat-container">
+      <!-- Header Chat -->
+      <header class="chat-header">
+        <div class="header-info">
+          <h2 id="current-role-display">👨‍🏫 Professeur</h2>
+          <p id="current-role-desc">Professeur particulier enthousiaste</p>
+        </div>
+        <button class="btn-menu" id="btn-menu-toggle">☰</button>
+      </header>
+
+      <!-- Zone Messages -->
+      <div class="chat-messages" id="chat-messages">
+        <div class="message-welcome">
+          <div class="welcome-icon">👋</div>
+          <h3>Bienvenue!</h3>
+          <p id="welcome-text">Sélectionnez un rôle et commencez à discuter</p>
+        </div>
+      </div>
+
+      <!-- Suggestion Chips -->
+      <div class="suggestion-chips" id="suggestion-chips">
+        <button class="chip" data-query="météo Paris">🌤️ Météo Paris</button>
+        <button class="chip" data-query="Théorème de Pythagore">🧮 Pythagore</button>
+        <button class="chip" data-query="Apprendre Python">💻 Python</button>
+        <button class="chip" data-query="Capitale du Japon">🌍 Capitale du Japon</button>
+        <button class="chip" data-query="Raconte-moi une blague">😄 Une blague</button>
+        <button class="chip" data-query="L'ADN c'est quoi ?">⚛️ L'ADN</button>
+      </div>
+
+      <!-- Zone Saisie -->
+      <form class="chat-input-form" id="chat-form">
+        <input
+          type="text"
+          id="chat-input"
+          class="chat-input"
+          placeholder="Écris ton message..."
+          autocomplete="off"
+        />
+        <button type="submit" class="btn-send" title="Envoyer">
+          <span class="icon">→</span>
+        </button>
+      </form>
+    </main>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       MODAL CONFIGURATION
+       ════════════════════════════════════════════════════════════ -->
+  <div class="modal" id="modal-config">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Paramètres API</h3>
+        <button class="btn-close" id="btn-close-modal">✕</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="config-group">
+          <label>Clé Claude (Anthropic)</label>
+          <input type="password" id="input-claude" placeholder="sk-ant-…" autocomplete="off" />
+          <small>Obtenir une clé : <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></small>
+        </div>
+
+        <div class="config-group">
+          <label>Clé Gemini (Google)</label>
+          <input type="password" id="input-gemini" placeholder="AIzaSy…" autocomplete="off" />
+          <small>Obtenir une clé : <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com/apikey</a></small>
+        </div>
+
+        <div class="config-group">
+          <label>Clé Google Custom Search</label>
+          <input type="password" id="input-apikey" placeholder="AIzaSy…" autocomplete="off" />
+          <small>Obtenir une clé : <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a></small>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-secondary" id="btn-clear-keys">Effacer</button>
+        <button class="btn btn-primary" id="btn-save-keys">Enregistrer</button>
+      </div>
+
+      <div id="config-message" class="config-message"></div>
+    </div>
+  </div>
+
+  <!-- ════════════════════════════════════════════════════════════
+       INDICATEUR FRAPPE
+       ════════════════════════════════════════════════════════════ -->
+  <div class="typing-indicator" id="typing-indicator">
+    <span class="dot"></span>
+    <span class="dot"></span>
+    <span class="dot"></span>
+  </div>
+
+  <script src="roles.js"></script>
+  <script src="lessons.js"></script>
+  <script src="api.js"></script>
+  <script src="storage.js"></script>
+  <script src="chat.js"></script>
+</body>
+</html>
