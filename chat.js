@@ -561,6 +561,9 @@ function renderHistorique() {
   }
 
   history.forEach(conv => {
+    const container = document.createElement("div");
+    container.className = "historique-item-container";
+
     const item = document.createElement("button");
     item.className = "historique-item";
     if (conv.id === state.currentConversationId) {
@@ -568,7 +571,19 @@ function renderHistorique() {
     }
     item.textContent = conv.title;
     item.onclick = () => selectConversation(conv.id);
-    elements.historiqueList.appendChild(item);
+
+    const deleteBtn = document.createElement("button");
+    deleteBtn.className = "historique-delete-btn";
+    deleteBtn.textContent = "×";
+    deleteBtn.title = "Supprimer cette conversation";
+    deleteBtn.onclick = (e) => {
+      e.stopPropagation();
+      handleDeleteConversation(conv.id);
+    };
+
+    container.appendChild(item);
+    container.appendChild(deleteBtn);
+    elements.historiqueList.appendChild(container);
   });
 }
 
@@ -582,6 +597,29 @@ function selectConversation(conversationId) {
   // Fermer la sidebar sur mobile
   if (window.innerWidth <= 768) {
     elements.sidebar.classList.remove("active");
+  }
+}
+
+function handleDeleteConversation(conversationId) {
+  const conversation = getConversationById(conversationId);
+  if (!conversation) return;
+
+  const confirmDelete = confirm(
+    `Êtes-vous sûr de vouloir supprimer la conversation:\n\n"${conversation.title}"\n\nCette action est irréversible.`
+  );
+
+  if (confirmDelete) {
+    deleteConversation(conversationId);
+    renderHistorique();
+
+    if (state.currentConversationId === conversationId) {
+      const remainingConversations = getConversationHistory();
+      if (remainingConversations.length > 0) {
+        selectConversation(remainingConversations[0].id);
+      } else {
+        handleNewConversation();
+      }
+    }
   }
 }
 

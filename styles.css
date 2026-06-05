@@ -196,7 +196,15 @@ a:hover {
   min-height: 0;
 }
 
+.historique-item-container {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  transition: var(--transition-fast);
+}
+
 .historique-item {
+  flex: 1;
   padding: 0.75rem;
   background-color: #332f52;
   border: 1px solid transparent;
@@ -209,13 +217,43 @@ a:hover {
   overflow: hidden;
   text-overflow: ellipsis;
   box-shadow: 0 2px 6px rgba(168, 85, 247, 0.1);
+  text-align: left;
 }
 
-.historique-item:hover {
+.historique-delete-btn {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  padding: 0;
+  background-color: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  border-radius: var(--radius-lg);
+  color: #fca5a5;
+  font-size: 1.25rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: var(--transition-fast);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.historique-delete-btn:hover {
+  background-color: rgba(239, 68, 68, 0.25);
+  border-color: #ef4444;
+  color: #fecaca;
+  transform: scale(1.1);
+}
+
+.historique-delete-btn:active {
+  transform: scale(0.95);
+}
+
+.historique-item-container:hover .historique-item {
   background-color: #3d3a50;
   color: #f8f9ff;
   border-color: #a855f7;
-  transform: translateX(2px);
   box-shadow: 0 4px 8px rgba(168, 85, 247, 0.2);
 }
 
@@ -225,6 +263,10 @@ a:hover {
   border-color: #a855f7;
   box-shadow: 0 4px 12px rgba(168, 85, 247, 0.3);
   font-weight: 600;
+}
+
+.historique-item-container:hover .historique-delete-btn {
+  opacity: 1;
 }
 
 /* ─── ROLES ─── */
