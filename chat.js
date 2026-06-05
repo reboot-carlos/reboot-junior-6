@@ -62,8 +62,11 @@ function queryDOMElements() {
 }
 
 function initialize() {
+  console.log("🚀 Initializing chatbot...");
+
   // Query DOM elements after DOM is ready
   queryDOMElements();
+  console.log("✓ DOM elements queried");
 
   // Initialiser la première conversation
   if (!state.currentConversationId) {
@@ -78,6 +81,7 @@ function initialize() {
 
   // Initialiser les attributs aria pour les accordéons
   initializeAccordionAttributes();
+  console.log("✓ Chatbot initialized");
 }
 
 /* ═══════════════════════════════════════════════════════════════════════════
@@ -85,19 +89,25 @@ function initialize() {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 function setupEventListeners() {
+  console.log("Setting up event listeners. Found", elements.roleButtons.length, "role buttons");
+
   // Chat
   elements.chatForm.addEventListener("submit", handleSendMessage);
   elements.btnMenuToggle.addEventListener("click", toggleSidebar);
 
   // Rôles
-  elements.roleButtons.forEach(btn => {
-    btn.addEventListener("click", () => handleRoleChange(btn.dataset.role));
+  elements.roleButtons.forEach((btn, idx) => {
+    btn.addEventListener("click", () => {
+      console.log("Role button clicked:", btn.dataset.role);
+      handleRoleChange(btn.dataset.role);
+    });
   });
 
   // Personnalités
   elements.personalityButtons.forEach(btn => {
     btn.addEventListener("click", () => {
       const personality = btn.dataset.personality === "none" ? null : btn.dataset.personality;
+      console.log("Personality clicked:", personality);
       handlePersonalityChange(personality);
     });
   });
@@ -504,16 +514,24 @@ function loadConversationMessages() {
    ═══════════════════════════════════════════════════════════════════════════ */
 
 function handleRoleChange(roleKey) {
+  console.log("handleRoleChange called with:", roleKey);
+
   state.currentRole = roleKey;
+  console.log("State updated");
+
   saveCurrentRole(roleKey);
+  console.log("Role saved to localStorage");
 
   // Mettre à jour l'affichage
   updateRoleDisplay();
+  console.log("Display updated");
 
   // Réinitialiser le chat avec le nouveau rôle
   loadConversationMessages();
+  console.log("Conversation messages loaded");
 
   elements.chatInput.focus();
+  console.log("✓ Role change complete");
 }
 
 function handlePersonalityChange(personalityKey) {
