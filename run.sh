@@ -82,7 +82,8 @@ echo ""
 echo "🚀  Starting container '${CONTAINER_NAME}' on port ${PORT}..."
 docker run -d \
   --name "${CONTAINER_NAME}" \
-  -p "${PORT}:80" \
+  -p "${PORT}:${PORT}" \
+  -e PORT="${PORT}" \
   --restart unless-stopped \
   "${IMAGE_NAME}"
 

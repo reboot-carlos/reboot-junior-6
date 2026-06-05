@@ -3,12 +3,13 @@ FROM nginx:alpine
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
 
-# Copy custom nginx config
-COPY nginx.conf /etc/nginx/conf.d/chatia.conf
+# Copy config as a template (PORT will be substituted at runtime)
+COPY nginx.conf /etc/nginx/templates/chatia.conf.template
 
 # Copy all static files to nginx web root
 COPY . /usr/share/nginx/html/
 
 EXPOSE 80
 
-CMD ["nginx", "-g", "daemon off;"]
+# Substitute ${PORT} from Railway's env var, then start nginx
+CMD ["/bin/sh", "-c", "envsubst '${PORT}' < /etc/nginx/templates/chatia.conf.template > /etc/nginx/conf.d/chatia.conf && nginx -g 'daemon off;'"]
